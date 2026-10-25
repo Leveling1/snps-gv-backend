@@ -207,7 +207,7 @@ describe('API média externe', () => {
       });
 
     expect(response.status).toBe(415);
-    expect(response.body).toMatchObject({ title: 'Image non prise en charge' });
+    expect(response.body).toMatchObject({ title: 'Fichier non pris en charge' });
   });
 
   it('refuse un type déclaré hors de la liste blanche', async () => {
