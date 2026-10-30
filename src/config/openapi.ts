@@ -1,4 +1,5 @@
-import { mediaPaths, mediaResponses, mediaSchemas } from './media.openapi.js';
+import { mediaPaths } from './media.openapi.js';
+import { mediaResponses, mediaSchemas } from './media.openapi.schemas.js';
 
 export const openApiDocument = {
   openapi: '3.1.0',
