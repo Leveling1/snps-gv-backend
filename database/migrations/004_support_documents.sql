@@ -2,14 +2,28 @@ ALTER TABLE media_assets
   ALTER COLUMN width DROP NOT NULL,
   ALTER COLUMN height DROP NOT NULL;
 
-ALTER TABLE media_assets
-  DROP CONSTRAINT IF EXISTS media_assets_mime_type_check,
-  DROP CONSTRAINT IF EXISTS media_assets_extension_check,
-  DROP CONSTRAINT IF EXISTS media_assets_width_check,
-  DROP CONSTRAINT IF EXISTS media_assets_height_check,
-  DROP CONSTRAINT IF EXISTS media_assets_check,
-  DROP CONSTRAINT IF EXISTS media_assets_check1,
-  DROP CONSTRAINT IF EXISTS media_assets_check2;
+DO $migration$
+DECLARE
+  constraint_name TEXT;
+BEGIN
+  FOR constraint_name IN
+    SELECT constraint_info.conname
+    FROM pg_constraint AS constraint_info
+    WHERE constraint_info.conrelid = 'media_assets'::regclass
+      AND constraint_info.contype = 'c'
+      AND (
+        position('mime_type' IN pg_get_constraintdef(constraint_info.oid)) > 0
+        OR position('extension' IN pg_get_constraintdef(constraint_info.oid)) > 0
+        OR position('width' IN pg_get_constraintdef(constraint_info.oid)) > 0
+        OR position('height' IN pg_get_constraintdef(constraint_info.oid)) > 0
+        OR position('public_filename' IN pg_get_constraintdef(constraint_info.oid)) > 0
+        OR position('storage_key' IN pg_get_constraintdef(constraint_info.oid)) > 0
+      )
+  LOOP
+    EXECUTE format('ALTER TABLE media_assets DROP CONSTRAINT %I', constraint_name);
+  END LOOP;
+END;
+$migration$;
 
 ALTER TABLE media_assets
   ADD CONSTRAINT media_assets_mime_type_check CHECK (mime_type IN (
