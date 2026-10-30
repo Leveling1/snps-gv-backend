@@ -165,6 +165,38 @@ export const mediaPaths = {
       },
     },
   },
+  '/api/v1/media/{id}/content': {
+    get: {
+      tags: ['Media'],
+      summary: 'Retourne un média à Supabase après authentification service-à-service',
+      operationId: 'getPrivateMediaContent',
+      security: [{ IntegrationApiKey: [] }],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: { type: 'string', format: 'uuid' },
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Contenu binaire privé; Cache-Control: private, no-store.',
+          content: {
+            'image/jpeg': { schema: { type: 'string', format: 'binary' } },
+            'image/png': { schema: { type: 'string', format: 'binary' } },
+            'application/pdf': { schema: { type: 'string', format: 'binary' } },
+            'application/msword': { schema: { type: 'string', format: 'binary' } },
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+              schema: { type: 'string', format: 'binary' },
+            },
+          },
+        },
+        '401': { $ref: '#/components/responses/Unauthorized' },
+        '404': { $ref: '#/components/responses/NotFound' },
+      },
+    },
+  },
   '/media/{filename}': {
     get: {
       tags: ['Media'],

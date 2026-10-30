@@ -73,6 +73,23 @@ export function createGetPublicMediaHandler(service: MediaService): RequestHandl
   };
 }
 
+export function createGetPrivateMediaHandler(service: MediaService): RequestHandler {
+  return async (request, response) => {
+    const parsedId = mediaIdParamSchema.safeParse(request.params.id);
+    if (!parsedId.success) {
+      throw new HttpError(404, 'Fichier introuvable', "Ce fichier n'existe pas.");
+    }
+
+    const { record, data } = await service.getMediaById(parsedId.data);
+    response.set({
+      'Cache-Control': 'private, no-store',
+      'Content-Disposition': `${record.mimeType.startsWith('image/') ? 'inline' : 'attachment'}; filename="${record.publicFilename}"`,
+      'X-Content-Type-Options': 'nosniff',
+    });
+    response.status(200).type(record.mimeType).send(data);
+  };
+}
+
 export function createDeleteMediaHandler(service: MediaService): RequestHandler {
   return async (request, response) => {
     const parsedId = mediaIdParamSchema.safeParse(request.params.id);

@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { requireIntegrationApiKey } from '../../shared/security/integration-api-key.middleware.js';
 import {
   createDeleteMediaHandler,
+  createGetPrivateMediaHandler,
   createGetPublicMediaHandler,
   createUploadMediaHandler,
 } from './media.controller.js';
@@ -21,6 +22,7 @@ export function createMediaRouter(service: MediaService): Router {
     mediaUploadMiddleware,
     createUploadMediaHandler(service),
   );
+  router.get('/:id/content', requireIntegrationApiKey, createGetPrivateMediaHandler(service));
   router.delete('/:id', requireIntegrationApiKey, createDeleteMediaHandler(service));
 
   return router;

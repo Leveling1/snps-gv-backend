@@ -79,6 +79,12 @@ export class MediaService {
     return { record, data: await this.storage.read(record.storageKey) };
   }
 
+  public async getMediaById(id: string): Promise<PublicMedia> {
+    const record = await this.repository.findReadyById(id);
+    if (!record) throw new HttpError(404, 'Fichier introuvable', "Ce fichier n'existe pas.");
+    return { record, data: await this.storage.read(record.storageKey) };
+  }
+
   public async deleteMedia(id: string, input: DeleteMediaInput = {}): Promise<MediaRecord> {
     const record = await this.repository.findReadyById(id);
     if (!record) throw new HttpError(404, 'Image introuvable', "Cette image n'existe pas.");

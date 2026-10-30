@@ -41,7 +41,7 @@ const envSchema = z.object({
     .int()
     .min(1_024)
     .max(20 * 1_024 * 1_024)
-    .default(5 * 1_024 * 1_024),
+    .default(10 * 1_024 * 1_024),
   MEDIA_MAX_INPUT_PIXELS: z.coerce
     .number()
     .int()
