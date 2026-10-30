@@ -34,7 +34,7 @@ $$;
 
 CREATE TRIGGER media_assets_no_delete
 BEFORE DELETE ON media_assets
-FOR EACH ROW EXECUTE FUNCTION prevent_media_asset_delete();
+FOR EACH ROW EXECUTE PROCEDURE prevent_media_asset_delete();
 
 CREATE FUNCTION restrict_media_asset_update() RETURNS trigger
 LANGUAGE plpgsql AS $$
@@ -64,6 +64,6 @@ $$;
 
 CREATE TRIGGER media_assets_restrict_update
 BEFORE UPDATE ON media_assets
-FOR EACH ROW EXECUTE FUNCTION restrict_media_asset_update();
+FOR EACH ROW EXECUTE PROCEDURE restrict_media_asset_update();
 
 REVOKE DELETE ON media_assets FROM PUBLIC;

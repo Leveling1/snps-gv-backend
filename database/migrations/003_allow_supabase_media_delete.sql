@@ -66,7 +66,7 @@ $$;
 
 CREATE TRIGGER media_assets_restrict_update
 BEFORE UPDATE ON media_assets
-FOR EACH ROW EXECUTE FUNCTION restrict_media_asset_update();
+FOR EACH ROW EXECUTE PROCEDURE restrict_media_asset_update();
 
 CREATE INDEX media_assets_deleted_at_idx ON media_assets (deleted_at DESC)
 WHERE status = 'deleted';
